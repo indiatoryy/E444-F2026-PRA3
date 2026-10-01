@@ -1,10 +1,10 @@
-<!-- Use Bootstrap's layout. It loads Bootstrap's CSS and JavaScript. -->
+<!-- bootstrap/base.html is the built-in template. it loads the css and javascript -->
 {% extends "bootstrap/base.html" %}
 
-<!-- Text shown in the browser tab. -->
+<!-- words in the browser tab. index.html can replace this -->
 {% block title %}Flasky{% endblock %}
 
-<!-- Navigation bar at the top of the page. -->
+<!-- nav bar at the top. every page that extends this file gets it -->
 {% block navbar %}
 <div class="navbar navbar-inverse" role="navigation">
     <div class="container">
@@ -27,14 +27,22 @@
 </div>
 {% endblock %}
 
-<!-- The main area. Other templates fill in page_content. -->
+<!-- the middle of the page. index.html fills in page_content -->
 {% block content %}
 <div class="container">
+    <!-- these are the yellow boxes from flash() in hello.py -->
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ message }}
+    </div>
+    {% endfor %}
+
     {% block page_content %}{% endblock %}
 </div>
 {% endblock %}
 
-<!-- Load Moment so the timestamp can be formatted in the browser. -->
+<!-- moment.js is loaded here in case a page wants to show a date -->
 {% block scripts %}
 {{ super() }}
 {{ moment.include_moment() }}

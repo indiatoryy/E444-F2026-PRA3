@@ -1,14 +1,22 @@
-<!-- Reuse the navigation bar and layout from base.html. -->
+<!-- this page uses the nav bar from base.html -->
 {% extends "base.html" %}
+<!-- wtf.quick_form draws the two boxes and the Submit button for me -->
+{% import "bootstrap/wtf.html" as wtf %}
 
-<!-- Browser-tab title for this page. -->
-{% block title %}Hello {{ name }}!{% endblock %}
+{% block title %}Flasky{% endblock %}
 
 {% block page_content %}
 <div class="page-header">
-    <!-- Page heading: Hello, followed by the name sent from hello.py. -->
-    <h1>Hello {{ name }}!</h1>
+    <!-- name comes from the session. if there is no name yet, say Stranger -->
+    <h1>Hello, {% if name %}{{ name }}{% else %}Stranger{% endif %}!</h1>
+    {% if email %}
+        <!-- the PRA says utoronto anywhere in the email counts as UofT -->
+        {% if 'utoronto' in email.lower() %}
+        <h1>Your UofT email is {{ email }}</h1>
+        {% else %}
+        <h1>Please use your UofT email.</h1>
+        {% endif %}
+    {% endif %}
 </div>
-<!-- LLLL is a long local date and time, such as Thursday, October 1, 2026 12:31 PM. -->
-<p>The local date and time is {{ moment(current_time).format('LLLL') }}.</p>
+{{ wtf.quick_form(form) }}
 {% endblock %}
