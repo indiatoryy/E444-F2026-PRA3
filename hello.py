@@ -2,7 +2,7 @@
 # session remembers the name and email in this browser
 # redirect and url_for send the browser back to the home page
 # flash is how I show the yellow "you changed your name" messages
-from flask import Flask, render_template, session, redirect, url_for, flash
+from flask import Flask, render_template, session, redirect, url_for, flash, request
 
 from flask_bootstrap import Bootstrap # this is for the nav bar
 from flask_moment import Moment # this is for the date from activity 1.3
@@ -59,11 +59,52 @@ def index():
         # save the new answers. form.name.data is whatever they typed
         session['name'] = form.name.data
         session['email'] = form.email.data
-        # send them back to this same page so a refresh does not submit twice
+        # a UofT email goes to the chat page. anything else stays on the home page
+        if 'utoronto' in form.email.data.lower():
+            return redirect(url_for('chat'))
         return redirect(url_for('index'))
     # if they have not submitted yet, name and email are empty
     # then the template says Hello, Unknown!
     return render_template('index.html', form=form, name=session.get('name'), email=session.get('email'))
+
+
+# the chat page is a normal GET. sending a message is a POST to this same url
+@app.route('/chat', methods=['GET', 'POST'])
+def chat():
+    email = session.get('email')
+    # only someone who already submitted a UofT email can use the chat
+    if not email or 'utoronto' not in email.lower():
+        return redirect(url_for('index'))
+
+    if request.method == 'GET':
+        return render_template('chat.html')
+
+    message = request.json['message']
+    text = message.lower()
+
+    # remember the name in the session so the next message can use it
+    if 'my name is' in text:
+        remembered = message.split('is', 1)[1].strip(' .!')
+        session['bot_name'] = remembered
+        reply = 'Nice to meet you, ' + remembered + '!'
+    elif 'what is my name' in text:
+        remembered = session.get('bot_name')
+        if remembered:
+            reply = 'Your name is ' + remembered + '.'
+        else:
+            reply = "I don't know your name yet."
+    elif 'hello' in text:
+        reply = 'Hello!'
+    else:
+        reply = "I don't understand."
+    return {'reply': reply}
+
+
+# logout drops everything the session was remembering and goes home
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('index'))
 
 
 # this is the old example 2-2 page, like /user/India

@@ -1,0 +1,50 @@
+<!-- same nav bar as the other pages -->
+{% extends "base.html" %}
+
+{% block title %}Chat{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>Chat</h1>
+</div>
+
+<!-- the replies show up here -->
+<div id="replies"></div>
+
+<form id="chat-form">
+    <div class="form-group">
+        <input id="message" class="form-control" placeholder="Type a message" required>
+    </div>
+    <button type="submit" class="btn btn-default">Send</button>
+</form>
+
+<p><a class="btn btn-default" href="{{ url_for('logout') }}">Logout</a></p>
+
+<script>
+var form = document.getElementById('chat-form');
+var input = document.getElementById('message');
+var replies = document.getElementById('replies');
+
+form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    var message = input.value;
+
+    // send the message to the /chat POST route and show the reply
+    fetch('/chat', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({message: message})
+    })
+    .then(function (response) { return response.json(); })
+    .then(function (data) {
+        var you = document.createElement('p');
+        you.textContent = 'You: ' + message;
+        var bot = document.createElement('p');
+        bot.textContent = 'Bot: ' + data.reply;
+        replies.appendChild(you);
+        replies.appendChild(bot);
+        input.value = '';
+    });
+});
+</script>
+{% endblock %}
