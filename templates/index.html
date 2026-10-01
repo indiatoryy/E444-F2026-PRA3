@@ -3,12 +3,13 @@
 <!-- wtf.quick_form draws the two boxes and the Submit button for me -->
 {% import "bootstrap/wtf.html" as wtf %}
 
-{% block title %}Flasky{% endblock %}
+<!-- activity 2.3: the page title now includes the Docker welcome -->
+{% block title %}Hello, {% if name %}{{ name }}{% else %}Unknown{% endif %}! Welcome to PRA3 Docker!{% endblock %}
 
 {% block page_content %}
 <div class="page-header">
     <!-- name comes from the session. if there is no name yet, say Stranger -->
-    <h1>Hello, {% if name %}{{ name }}{% else %}Stranger{% endif %}!</h1>
+    <h1>Hello, {% if name %}{{ name }}{% else %}Unknown{% endif %}! Welcome to PRA3 Docker!</h1>
     {% if email %}
         <!-- the PRA says utoronto anywhere in the email counts as UofT -->
         {% if 'utoronto' in email.lower() %}

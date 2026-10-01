@@ -12,8 +12,7 @@ from wtforms.validators import DataRequired, Email
 
 # this makes the app
 app = Flask(__name__)
-# flask needs a secret key or the form and the session will not work
-# the textbook just uses this string
+# flask needs a secret key or the form and the session will not work -the textbook just uses this string
 app.config['SECRET_KEY'] = 'hard to guess string'
 
 # hook bootstrap and moment up to the app
@@ -63,7 +62,7 @@ def index():
         # send them back to this same page so a refresh does not submit twice
         return redirect(url_for('index'))
     # if they have not submitted yet, name and email are empty
-    # then the template says Hello, Stranger!
+    # then the template says Hello, Unknown!
     return render_template('index.html', form=form, name=session.get('name'), email=session.get('email'))
 
 
