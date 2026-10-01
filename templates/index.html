@@ -1,0 +1,14 @@
+<!-- Reuse the navigation bar and layout from base.html. -->
+{% extends "base.html" %}
+
+<!-- Browser-tab title for this page. -->
+{% block title %}Hello {{ name }}!{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <!-- Page heading: Hello, followed by the name sent from hello.py. -->
+    <h1>Hello {{ name }}!</h1>
+</div>
+<!-- LLLL is a long local date and time, such as Thursday, October 1, 2026 12:31 PM. -->
+<p>The local date and time is {{ moment(current_time).format('LLLL') }}.</p>
+{% endblock %}
